@@ -1,41 +1,48 @@
-Wox   [![Build status](https://ci.appveyor.com/api/projects/status/bfktntbivg32e103)](https://ci.appveyor.com/project/qianlifeng/wox) <a href="https://chocolatey.org/packages/wox"><img src="https://img.shields.io/badge/chocolatey-wox-b4884f.svg?style=flat" style="height:auto; width: 100%"></a> [![Bountysource](https://www.bountysource.com/badge/team?team_id=39433&style=raised)](https://www.bountysource.com/teams/wox?utm_source=Wox&utm_medium=shield&utm_campaign=raised)
-=========
-[Wox](http://www.getwox.com) is a launcher for windows, which was inspired by [Alfred](http://www.alfredapp.com/) and [Launchy](http://www.launchy.net/). Wox provide an entry to search everything you want. 
+[![Gitter](https://badges.gitter.im/Wox-launcher/Wox.svg)](https://gitter.im/Wox-launcher/Wox?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Build status](https://ci.appveyor.com/api/projects/status/bfktntbivg32e103)](https://ci.appveyor.com/project/happlebao/wox)
+[![Github All Releases](https://img.shields.io/github/downloads/Wox-launcher/Wox/total.svg)](https://github.com/Wox-launcher/Wox/releases)
+[![Issue Stats](http://issuestats.com/github/Wox-launcher/Wox/badge/pr)](http://issuestats.com/github/Wox-launcher/Wox) 
 
-Features
-=========
-1. Search applications, files and browser bookmarks (via plugin)
-2. Search web contents with shortcuts (e.g. search google with `g keyword` or `youtube keyword`)
-3. Themes support, get more themes from [http://www.getwox.com/theme/builder](http://www.getwox.com/theme/builder)
-4. Plugin support, get more plugins from [http://www.getwox.com/plugin](http://www.getwox.com/plugin)
-
-Screenshot
 =========
 
-<a href="https://github.com/qianlifeng/Wox/wiki/Screenshot">More screenshot</a>
-<img src="http://ww3.sinaimg.cn/large/dce48faejw1eihx6ffo8eg20zk0m8hdt.gif" />
+Launcher for Windows, an alternative to [Alfred](https://www.alfredapp.com/) and [Launchy](http://www.launchy.net/).
 
-Download
-=========
+# Demo
 
-Download from [release page](https://github.com/qianlifeng/Wox/releases).
+![demo](http://i.imgur.com/DtxNBJi.gif)
 
-Contribute  
-=========
+# Features
 
-If you are a developer, feel free to send a pull request to **Dev** branch. We still have a lot functions and bugs need to do now. Just pick one from [issues page](https://github.com/qianlifeng/Wox/issues) that you think you can fix.  
+- Search all applications, folders and files.
+- Use **pinyin** to search programs / 支持用 **拼音** 搜索程序 e.g. yyy / wangyiyun -> 网易云音乐
+- Search Web using keyword (e.g. search google with `g search_term`)
+- Build custom themes in [http://www.getwox.com/theme/builder](http://www.getwox.com/theme/builder)
+- Install plugins from [http://www.getwox.com/plugin](http://www.getwox.com/plugin)
 
-If you are not a developer, you can also help Wox by contributing the [Wox doc](http://doc.getwox.com).
+# Installation
+- Latest stable version: [releases](https://github.com/Wox-launcher/Wox/releases).
+- Latest beta version: try **Pre-release** labeled release in [releases](https://github.com/Wox-launcher/Wox/releases) 
 
+# Usage
+- Launch: <kbd>Alt</kbd>+<kbd>Space</kbd>
+- Install/Uninstall plugin: type `wpm install/uninstall`
 
+# Contribute  
+- First and most importantly, star it!
+- Send PR to **dev** branch
+- I'd appreciate if you could solve [help_needed](https://github.com/Wox-launcher/Wox/issues?q=is%3Aopen+is%3Aissue+label%3Ahelp_needed) labeled issue
+- Don't hesitate to ask questions in the [issues](https://github.com/Wox-launcher/Wox/issues)
+- 中文开发直接发我邮件我们聊 qq
 
-Doc
-=========
+# Docs
 
-If you have any questions about how to use Wox, please read [Wox Documentation](http://doc.getwox.com) first. Wox documentation is a good place for users to understand Wox.
+Outdated doc: [Wox doc](http://doc.getwox.com).
+Just ask questions in the [issues](https://github.com/Wox-launcher/Wox/issues)
 
+# Development / Author Status
 
-Discussion
-=========
+- [x] unified directory `%APPDATA%` for all storage
+- [ ] bring unitest for wox back
+- [x] add autoupdate / installer
+- [x] disable plugin properly
 
-We build a [Wox Fourms](http://discussion.getwox.com), so users can talk about everything about Wox there.

@@ -1,21 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using Microsoft.Win32;
+using Wox.Infrastructure.Logger;
 
 namespace Wox.Plugin.Program.ProgramSources
 {
     [Serializable]
-    [global::System.ComponentModel.Browsable(false)]
-    public class AppPathsProgramSource: AbstractProgramSource
+    [Browsable(false)]
+    public class AppPathsProgramSource : AbstractProgramSource
     {
         public AppPathsProgramSource()
         {
-            this.BonusPoints = -10;
+            BonusPoints = -10;
         }
 
-        public AppPathsProgramSource(ProgramSource source)
-            : this()
+        public AppPathsProgramSource(ProgramSource source) : this()
         {
-            this.BonusPoints = source.BonusPoints;
+            BonusPoints = source.BonusPoints;
         }
 
         public override List<Program> LoadPrograms()
@@ -28,22 +31,37 @@ namespace Wox.Plugin.Program.ProgramSources
 
         private void ReadAppPaths(string rootpath, List<Program> list)
         {
-            using (var root = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(rootpath))
+            using (var root = Registry.LocalMachine.OpenSubKey(rootpath))
             {
                 if (root == null) return;
                 foreach (var item in root.GetSubKeyNames())
                 {
-                    using (var key = root.OpenSubKey(item))
+                    try
                     {
-                        object path = key.GetValue("");
-                        if (path is string && global::System.IO.File.Exists((string)path))
+                        using (var key = root.OpenSubKey(item))
                         {
-                            var entry = CreateEntry((string)path);
-                            entry.ExecuteName = item;
+                            string path = key.GetValue("") as string;
+                            if (string.IsNullOrEmpty(path)) continue;
+
+                            // fix path like this ""\"C:\\folder\\executable.exe\"""
+                            const int begin = 0;
+                            int end = path.Length - 1;
+                            const char quotationMark = '"';
+                            if (path[begin] == quotationMark && path[end] == quotationMark)
+                            {
+                                path = path.Substring(begin + 1, path.Length - 2);
+                            }
+
+                            if (!File.Exists(path)) continue;
+                            var entry = CreateEntry(path);
+                            entry.ExecutableName = item;
+                            entry.Source = this;
                             list.Add(entry);
                         }
-
-                        key.Close();
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
                     }
                 }
             }

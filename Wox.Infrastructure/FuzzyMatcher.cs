@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text;
 
 namespace Wox.Infrastructure
 {
@@ -32,7 +28,7 @@ namespace Wox.Infrastructure
 
         public MatchResult Evaluate(string str)
         {
-            if (string.IsNullOrEmpty(str) || string.IsNullOrEmpty(query)) return new MatchResult() { Success = false };
+            if (string.IsNullOrEmpty(str) || string.IsNullOrEmpty(query)) return new MatchResult { Success = false };
 
             var len = str.Length;
             var compareString = opt.IgnoreCase ? str.ToLower() : str;
@@ -71,7 +67,7 @@ namespace Wox.Infrastructure
             // return rendered string if we have a match for every char
             if (patternIdx == pattern.Length)
             {
-                return new MatchResult()
+                return new MatchResult
                 {
                     Success = true,
                     Value = sb.ToString(),
@@ -79,7 +75,7 @@ namespace Wox.Infrastructure
                 };
             }
 
-            return new MatchResult() { Success = false };
+            return new MatchResult { Success = false };
         }
 
         private int CalScore(string str, int firstIndex, int matchLen)
@@ -111,9 +107,9 @@ namespace Wox.Infrastructure
     {
         public MatchOption()
         {
-            this.Prefix = "";
-            this.Suffix = "";
-            this.IgnoreCase = true;
+            Prefix = "";
+            Suffix = "";
+            IgnoreCase = true;
         }
 
         /// <summary>

@@ -1,26 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Exceptionless;
-using Wox.Core;
-using Wox.Core.Exception;
-using Wox.Core.i18n;
-using Wox.Core.UI;
-using Wox.Core.Updater;
-using Wox.Core.UserSettings;
-using Wox.Infrastructure.Http;
-using Wox.Infrastructure.Logger;
+using Wox.Core.Resource;
+using Wox.Infrastructure;
 
 namespace Wox.CrashReporter
 {
@@ -38,7 +23,7 @@ namespace Wox.CrashReporter
         private void SetException(Exception exception)
         {
             tbSummary.AppendText(exception.Message);
-            tbVersion.Text = UpdaterManager.Instance.CurrentVersion.ToString();
+            tbVersion.Text = Infrastructure.Wox.Version;
             tbDatetime.Text = DateTime.Now.ToString();
             tbStackTrace.AppendText(exception.StackTrace);
             tbSource.Text = exception.Source;
@@ -56,17 +41,17 @@ namespace Wox.CrashReporter
         private void SendReport()
         {
             Hide();
-            ThreadPool.QueueUserWorkItem(o =>
+            Task.Run(() =>
             {
                 string reproduceSteps = new TextRange(tbReproduceSteps.Document.ContentStart, tbReproduceSteps.Document.ContentEnd).Text;
                 exception.ToExceptionless()
                     .SetUserDescription(reproduceSteps)
                     .Submit();
                 ExceptionlessClient.Current.ProcessQueue();
-                Dispatcher.Invoke(new Action(() =>
+                Dispatcher.Invoke(() =>
                 {
                     Close();
-                }));
+                });
             });
         }
 
