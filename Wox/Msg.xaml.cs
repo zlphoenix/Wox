@@ -20,7 +20,7 @@ namespace Wox
         {
             InitializeComponent();
             var screen = Screen.FromPoint(System.Windows.Forms.Cursor.Position);
-            var dipWorkingArea = WindowIntelopHelper.TransformPixelsToDIP(this,
+            var dipWorkingArea = WindowsInteropHelper.TransformPixelsToDIP(this,
                 screen.WorkingArea.Width,
                 screen.WorkingArea.Height);
             Left = dipWorkingArea.X - Width;
@@ -38,7 +38,7 @@ namespace Wox
             Storyboard.SetTargetProperty(fadeOutAnimation, new PropertyPath(TopProperty));
             fadeOutStoryboard.Children.Add(fadeOutAnimation);
 
-            imgClose.Source = ImageLoader.Load(Path.Combine(Infrastructure.Wox.ProgramPath, "Images\\close.png"));
+            imgClose.Source = ImageLoader.Load(Path.Combine(Infrastructure.Constant.ProgramDirectory, "Images\\close.png"));
             imgClose.MouseUp += imgClose_MouseUp;
         }
 
@@ -66,7 +66,7 @@ namespace Wox
             }
             if (!File.Exists(iconPath))
             {
-                imgIco.Source = ImageLoader.Load(Path.Combine(Infrastructure.Wox.ProgramPath, "Images\\app.png"));
+                imgIco.Source = ImageLoader.Load(Path.Combine(Infrastructure.Constant.ProgramDirectory, "Images\\app.png"));
             }
             else {
                 imgIco.Source = ImageLoader.Load(iconPath);

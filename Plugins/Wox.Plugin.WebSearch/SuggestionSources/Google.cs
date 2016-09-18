@@ -12,20 +12,20 @@ namespace Wox.Plugin.WebSearch.SuggestionSources
 {
     public class Google : SuggestionSource
     {
-        public override string Domain { get; set; } = "www.google.com";
-        public override async Task<List<string>> GetSuggestions(string query)
+        public override async Task<List<string>> Suggestions(string query)
         {
             string result;
             try
             {
                 const string api = "https://www.google.com/complete/search?output=chrome&q=";
-                result = await Http.Get(api + Uri.EscapeUriString(query), Proxy);
+                result = await Http.Get(api + Uri.EscapeUriString(query));
             }
             catch (WebException e)
             {
                 Log.Warn("Can't get suggestion from google");
-                Log.Error(e);
-                return new List<string>(); ;
+                Log.Exception(e);
+                return new List<string>();
+                ;
             }
             if (string.IsNullOrEmpty(result)) return new List<string>();
             JContainer json;
@@ -35,7 +35,7 @@ namespace Wox.Plugin.WebSearch.SuggestionSources
             }
             catch (JsonSerializationException e)
             {
-                Log.Error(e);
+                Log.Exception(e);
                 return new List<string>();
             }
             if (json != null)
@@ -49,8 +49,9 @@ namespace Wox.Plugin.WebSearch.SuggestionSources
             return new List<string>();
         }
 
-        public Google(IHttpProxy httpProxy) : base(httpProxy)
+        public override string ToString()
         {
+            return "Google";
         }
     }
 }

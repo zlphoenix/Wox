@@ -9,10 +9,11 @@ namespace Wox.Infrastructure.Logger
 {
     public static class Log
     {
+        public const string DirectoryName = "Logs";
+
         static Log()
         {
-            var directoryName = "Logs";
-            var path = Path.Combine(Wox.DataPath, directoryName);
+            var path = Path.Combine(Constant.DataDirectory, DirectoryName, Constant.Version);
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -21,7 +22,7 @@ namespace Wox.Infrastructure.Logger
             var configuration = new LoggingConfiguration();
             var target = new FileTarget();
             configuration.AddTarget("file", target);
-            target.FileName = "${specialfolder:folder=ApplicationData}/" + Wox.Name + "/" + directoryName + "/${shortdate}.log";
+            target.FileName = "${specialfolder:folder=ApplicationData}/" + Constant.Wox + "/" + DirectoryName + "/" + Constant.Version + "/${shortdate}.txt";
             var rule = new LoggingRule("*", LogLevel.Info, target);
             configuration.LoggingRules.Add(rule);
             LogManager.Configuration = configuration;
@@ -35,20 +36,26 @@ namespace Wox.Infrastructure.Logger
             var type = $"{method.DeclaringType.NonNull().FullName}.{method.Name}";
             return type;
         }
-        public static void Error(System.Exception e)
+
+        public static void Error(string msg)
         {
             var type = CallerType();
             var logger = LogManager.GetLogger(type);
-#if DEBUG
-            throw e;
-#else
-            while (e.InnerException != null)
+            System.Diagnostics.Debug.WriteLine($"ERROR: {msg}");
+            logger.Error(msg);
+        }
+
+        public static void Exception(System.Exception e)
+        {
+            var type = CallerType();
+            var logger = LogManager.GetLogger(type);
+
+            do
             {
                 logger.Error(e.Message);
-                logger.Error(e.StackTrace);
+                logger.Error($"\n{e.StackTrace}");
                 e = e.InnerException;
-            }
-#endif
+            } while (e != null);
         }
 
         public static void Debug(string msg)
@@ -77,11 +84,11 @@ namespace Wox.Infrastructure.Logger
 
         public static void Fatal(System.Exception e)
         {
-            var type = CallerType();
-            var logger = LogManager.GetLogger(type);
 #if DEBUG
             throw e;
 #else
+            var type = CallerType();
+            var logger = LogManager.GetLogger(type);
             logger.Fatal(ExceptionFormatter.FormatExcpetion(e));
 #endif
         }

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Squirrel;
-using Wox.Core.UserSettings;
 using Wox.Infrastructure.Http;
 using Wox.Infrastructure.Logger;
 
@@ -19,7 +18,7 @@ namespace Wox.Core
         public static async void UpdateApp()
         {
 
-            var client = new WebClient {Proxy = Http.WebProxy(HttpProxy.Instance)};
+            var client = new WebClient {Proxy = Http.WebProxy()};
             var downloader = new FileDownloader(client);
 
             try
@@ -27,23 +26,23 @@ namespace Wox.Core
                 // todo 5/9 the return value of UpdateApp() is NULL, fucking useless!
                 using (
                     var updater =
-                        await UpdateManager.GitHubUpdateManager(Infrastructure.Wox.Github, urlDownloader: downloader))
+                        await UpdateManager.GitHubUpdateManager(Infrastructure.Constant.Github, urlDownloader: downloader))
                 {
                     await updater.UpdateApp();
                 }
             }
             catch (HttpRequestException he)
             {
-                Log.Error(he);
+                Log.Exception(he);
             }
             catch (WebException we)
             {
-                Log.Error(we);
+                Log.Exception(we);
             }
             catch (SocketException sc)
             {
                 Log.Info("Socket exception happened!, which method cause this exception??");
-                Log.Error(sc);
+                Log.Exception(sc);
             }
             catch (Exception exception)
             {
@@ -67,12 +66,12 @@ namespace Wox.Core
             string response;
             try
             {
-                response = await Http.Get(githubAPI, HttpProxy.Instance);
+                response = await Http.Get(githubAPI);
             }
             catch (WebException e)
             {
                 Log.Warn("Can't connect to github api to check new version");
-                Log.Error(e);
+                Log.Exception(e);
                 return string.Empty;
             }
 
@@ -85,7 +84,7 @@ namespace Wox.Core
                 }
                 catch (JsonSerializationException e)
                 {
-                    Log.Error(e);
+                    Log.Exception(e);
                     return string.Empty;
                 }
                 var version = json?["tag_name"]?.ToString();

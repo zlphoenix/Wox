@@ -31,11 +31,13 @@ namespace Wox.Plugin
         /// Just change the query text, this won't raise search
         /// </summary>
         /// <param name="query"></param>
+        [Obsolete]
         void ChangeQueryText(string query, bool selectAll = false);
 
         /// <summary>
         /// Close Wox
         /// </summary>
+        [Obsolete]
         void CloseApp();
 
         /// <summary>
@@ -46,11 +48,13 @@ namespace Wox.Plugin
         /// <summary>
         /// Hide Wox
         /// </summary>
+        [Obsolete]
         void HideApp();
 
         /// <summary>
         /// Show Wox
         /// </summary>
+        [Obsolete]
         void ShowApp();
 
         /// <summary>
@@ -64,16 +68,18 @@ namespace Wox.Plugin
         /// <summary>
         /// Open setting dialog
         /// </summary>
-        void OpenSettingDialog(string tabName = "general");
+        void OpenSettingDialog();
 
         /// <summary>
         /// Show loading animation
         /// </summary>
+        [Obsolete("automatically start")]
         void StartLoadingBar();
 
         /// <summary>
         /// Stop loading animation
         /// </summary>
+        [Obsolete("automatically stop")]
         void StopLoadingBar();
 
         /// <summary>

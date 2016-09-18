@@ -15,8 +15,8 @@ namespace Wox.Infrastructure.Storage
         internal JsonStrorage()
         {
             FileSuffix = ".json";
-            DirectoryName = Wox.Settings;
-            DirectoryPath = Wox.SettingsPath;
+            DirectoryName = Constant.Settings;
+            DirectoryPath = Constant.SettingsPath;
             FilePath = Path.Combine(DirectoryPath, FileName + FileSuffix);
 
             ValidateDirectory();
@@ -60,7 +60,7 @@ namespace Wox.Infrastructure.Storage
             catch (JsonSerializationException e)
             {
                 LoadDefault();
-                Log.Error(e);
+                Log.Exception(e);
             }
         }
 

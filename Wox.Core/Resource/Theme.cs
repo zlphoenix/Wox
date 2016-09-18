@@ -7,15 +7,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
-using Wox.Core.UserSettings;
 using Wox.Infrastructure.Logger;
+using Wox.Infrastructure.UserSettings;
 
 namespace Wox.Core.Resource
 {
     public class Theme : Resource
     {
         private static List<string> themeDirectories = new List<string>();
-        public UserSettings.Settings Settings { get; set; }
+        public Settings Settings { get; set; }
 
         public Theme()
         {
@@ -36,7 +36,7 @@ namespace Wox.Core.Resource
                     }
                     catch (Exception e)
                     {
-                        Log.Error(e);
+                        Log.Exception(e);
                     }
                 }
             }
@@ -59,7 +59,7 @@ namespace Wox.Core.Resource
 
             // Exception of FindResource can't be cathed if global exception handle is set
             var isBlur = Application.Current.TryFindResource("ThemeBlurEnabled");
-            if (isBlur is bool)
+            if (isBlur is bool && Environment.OSVersion.Version >= new Version(6, 2))
             {
                 SetBlurForWindow(Application.Current.MainWindow, (bool)isBlur);
             }

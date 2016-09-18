@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using Wox.Core.UserSettings;
+using System.IO;
+using Wox.Infrastructure;
 using Wox.Plugin;
 
 namespace Wox.Core.Plugin
@@ -18,8 +19,13 @@ namespace Wox.Core.Plugin
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true
+                RedirectStandardError = true,
             };
+
+            // temp fix for issue #667
+            var path = Path.Combine(Constant.ProgramDirectory, JsonRPC);
+            _startInfo.EnvironmentVariables["PYTHONPATH"] = path;
+
         }
 
         protected override string ExecuteQuery(Query query)
@@ -28,10 +34,11 @@ namespace Wox.Core.Plugin
             {
                 Method = "query",
                 Parameters = new object[] { query.Search },
-                HttpProxy = HttpProxy.Instance
             };
             //Add -B flag to tell python don't write .py[co] files. Because .pyc contains location infos which will prevent python portable
             _startInfo.Arguments = $"-B \"{context.CurrentPluginMetadata.ExecuteFilePath}\" \"{request}\"";
+            // todo happlebao why context can't be used in constructor
+            _startInfo.WorkingDirectory = context.CurrentPluginMetadata.PluginDirectory;
 
             return Execute(_startInfo);
         }
@@ -39,6 +46,7 @@ namespace Wox.Core.Plugin
         protected override string ExecuteCallback(JsonRPCRequestModel rpcRequest)
         {
             _startInfo.Arguments = $"-B \"{context.CurrentPluginMetadata.ExecuteFilePath}\" \"{rpcRequest}\"";
+            _startInfo.WorkingDirectory = context.CurrentPluginMetadata.PluginDirectory;
             return Execute(_startInfo);
         }
     }

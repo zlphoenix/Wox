@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using NHotkey;
 using NHotkey.Wpf;
 using Wox.Core.Resource;
-using Wox.Core.UserSettings;
 using Wox.Infrastructure.Hotkey;
+using Wox.Infrastructure.UserSettings;
 
 namespace Wox
 {
@@ -41,7 +42,7 @@ namespace Wox
 
                 if (_settings.CustomPluginHotkeys == null)
                 {
-                    _settings.CustomPluginHotkeys = new List<CustomPluginHotkey>();
+                    _settings.CustomPluginHotkeys = new ObservableCollection<CustomPluginHotkey>();
                 }
 
                 var pluginHotkey = new CustomPluginHotkey
@@ -54,7 +55,7 @@ namespace Wox
                 SetHotkey(ctlHotkey.CurrentHotkey, delegate
                 {
                     App.API.ChangeQuery(pluginHotkey.ActionKeyword);
-                    App.API.ShowApp();
+                    Application.Current.MainWindow.Visibility = Visibility.Visible;
                 });
                 MessageBox.Show(InternationalizationManager.Instance.GetTranslation("succeed"));
             }
@@ -72,13 +73,12 @@ namespace Wox
                 RemoveHotkey(oldHotkey);
                 SetHotkey(new HotkeyModel(updateCustomHotkey.Hotkey), delegate
                 {
-                    App.API.ShowApp();
                     App.API.ChangeQuery(updateCustomHotkey.ActionKeyword);
+                    Application.Current.MainWindow.Visibility = Visibility.Visible;
                 });
                 MessageBox.Show(InternationalizationManager.Instance.GetTranslation("succeed"));
             }
 
-            _settingWidow.ReloadCustomPluginHotkeyView();
             Close();
         }
 
@@ -100,8 +100,8 @@ namespace Wox
 
         private void BtnTestActionKeyword_OnClick(object sender, RoutedEventArgs e)
         {
-            App.API.ShowApp();
             App.API.ChangeQuery(tbAction.Text);
+            Application.Current.MainWindow.Visibility = Visibility.Visible;
         }
 
         private void RemoveHotkey(string hotkeyStr)

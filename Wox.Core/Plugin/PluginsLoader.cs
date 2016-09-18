@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Wox.Core.UserSettings;
+using Wox.Infrastructure;
 using Wox.Infrastructure.Exception;
 using Wox.Infrastructure.Logger;
+using Wox.Infrastructure.UserSettings;
 using Wox.Plugin;
 
 namespace Wox.Core.Plugin
@@ -32,6 +33,12 @@ namespace Wox.Core.Plugin
 
             foreach (var metadata in metadatas)
             {
+#if DEBUG
+                var assembly = Assembly.Load(AssemblyName.GetAssemblyName(metadata.ExecuteFilePath));
+                var types = assembly.GetTypes();
+                var type = types.First(o => o.IsClass && !o.IsAbstract && o.GetInterfaces().Contains(typeof(IPlugin)));
+                var plugin = (IPlugin)Activator.CreateInstance(type);
+#else
                 Assembly assembly;
                 try
                 {
@@ -39,7 +46,7 @@ namespace Wox.Core.Plugin
                 }
                 catch (Exception e)
                 {
-                    Log.Error(new WoxPluginException(metadata.Name, "Couldn't load assembly", e));
+                    Log.Exception(new WoxPluginException(metadata.Name, "Couldn't load assembly", e));
                     continue;
                 }
                 var types = assembly.GetTypes();
@@ -50,7 +57,7 @@ namespace Wox.Core.Plugin
                 }
                 catch (InvalidOperationException e)
                 {
-                    Log.Error(new WoxPluginException(metadata.Name, "Can't find class implement IPlugin", e));
+                    Log.Exception(new WoxPluginException(metadata.Name, "Can't find class implement IPlugin", e));
                     continue;
                 }
                 IPlugin plugin;
@@ -60,9 +67,10 @@ namespace Wox.Core.Plugin
                 }
                 catch (Exception e)
                 {
-                    Log.Error(new WoxPluginException(metadata.Name, "Can't create instance", e));
+                    Log.Exception(new WoxPluginException(metadata.Name, "Can't create instance", e));
                     continue;
                 }
+#endif
                 PluginPair pair = new PluginPair
                 {
                     Plugin = plugin,
@@ -90,13 +98,13 @@ namespace Wox.Core.Plugin
                     }
                     else
                     {
-                        Log.Error(new WoxException("Python can't be found in PATH."));
+                        Log.Exception(new WoxException("Python can't be found in PATH."));
                         return new List<PluginPair>();
                     }
                 }
                 else
                 {
-                    Log.Error(new WoxException("Path variable is not set."));
+                    Log.Exception(new WoxException("Path variable is not set."));
                     return new List<PluginPair>();
                 }
             }
@@ -109,10 +117,11 @@ namespace Wox.Core.Plugin
                 }
                 else
                 {
-                    Log.Error(new WoxException("Can't find python executable in python directory"));
+                    Log.Exception(new WoxException("Can't find python executable in python directory"));
                     return new List<PluginPair>();
                 }
             }
+            Constant.PythonPath = filename;
             var plugins = metadatas.Select(metadata => new PluginPair
             {
                 Plugin = new PythonPlugin(filename),

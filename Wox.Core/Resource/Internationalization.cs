@@ -5,13 +5,14 @@ using System.Linq;
 using System.Windows;
 using Wox.Infrastructure.Exception;
 using Wox.Infrastructure.Logger;
+using Wox.Infrastructure.UserSettings;
 using Wox.Plugin;
 
 namespace Wox.Core.Resource
 {
     public class Internationalization : Resource
     {
-        public UserSettings.Settings Settings { get; set; }
+        public Settings Settings { get; set; }
 
         public Internationalization()
         {
@@ -29,7 +30,7 @@ namespace Wox.Core.Resource
                 }
                 catch (Exception e)
                 {
-                    Log.Error(e);
+                    Log.Exception(e);
                 }
             }
         }
@@ -117,7 +118,7 @@ namespace Wox.Core.Resource
             catch (Exception e)
             {
                 var woxPluginException = new WoxPluginException(pluginPair.Metadata.Name, "Update Plugin metadata translation failed:", e);
-                Log.Error(woxPluginException);
+                Log.Exception(woxPluginException);
             }
         }
 

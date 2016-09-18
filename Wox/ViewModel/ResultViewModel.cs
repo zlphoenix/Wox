@@ -1,105 +1,69 @@
 ﻿using System;
-using Wox.Core.Plugin;
-using Wox.Core.Resource;
-using Wox.Infrastructure;
-using Wox.Infrastructure.Hotkey;
+using System.Windows.Media;
+using System.Windows.Threading;
+using Wox.Infrastructure.Image;
+using Wox.Infrastructure.Logger;
 using Wox.Plugin;
-using Wox.Storage;
+
 
 namespace Wox.ViewModel
 {
-    public class ResultViewModel : BaseViewModel
+    public class ResultViewModel : BaseModel
     {
-        #region Private Fields
-
-        private bool _isSelected;
-
-        #endregion
-
-        #region Constructor
-
         public ResultViewModel(Result result)
         {
             if (result != null)
             {
-                RawResult = result;
+                Result = result;
             }
         }
 
-
-        #endregion
-
-        #region ViewModel Properties
-
-        public string Title => RawResult.Title;
-
-        public string SubTitle => RawResult.SubTitle;
-
-        public string PluginID => RawResult.PluginID;
-
-        public string IcoPath => RawResult.IcoPath;
-
-        public int Score
+        public ImageSource Image
         {
-            get { return RawResult.Score; }
-            set { RawResult.Score = value; }
-        }
-
-        public Query OriginQuery
-        {
-            get { return RawResult.OriginQuery; }
-            set { RawResult.OriginQuery = value; }
-        }
-
-        public Func<ActionContext, bool> Action
-        {
-            get { return RawResult.Action; }
-            set { RawResult.Action = value; }
-        }
-
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set
+            get
             {
-                _isSelected = value;
-                OnPropertyChanged();
+                if (string.IsNullOrEmpty(Result.IcoPath))
+                {
+                    try
+                    {
+                        return Result.Icon();
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Exception(e);
+                        return ImageLoader.Load(Result.IcoPath);
+                    }
+                }
+                else
+                {
+                    return ImageLoader.Load(Result.IcoPath);
+                }
             }
         }
 
-        #endregion
-
-        #region Properties
-
-        internal Result RawResult { get; }
-
-        #endregion
-
-        public void Update(ResultViewModel newResult)
-        {
-            RawResult.Score = newResult.RawResult.Score;
-            RawResult.OriginQuery = newResult.RawResult.OriginQuery;
-        }
+        public Result Result { get; }
 
         public override bool Equals(object obj)
         {
-            ResultViewModel r = obj as ResultViewModel;
+            var r = obj as ResultViewModel;
             if (r != null)
             {
-                return RawResult.Equals(r.RawResult);
+                return Result.Equals(r.Result);
             }
-
-            return false;
+            else
+            {
+                return false;
+            }
         }
 
         public override int GetHashCode()
         {
-            return RawResult.GetHashCode();
+            return Result.GetHashCode();
         }
 
         public override string ToString()
         {
-            return RawResult.ToString();
+            return Result.ToString();
         }
 
     }

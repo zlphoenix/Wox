@@ -37,6 +37,7 @@ namespace Wox.Infrastructure.Storage
                     }
                     else
                     {
+                        stream.Close();
                         LoadDefault();
                     }
                 }
@@ -59,16 +60,13 @@ namespace Wox.Infrastructure.Storage
 
             try
             {
-                Data = (T)binaryFormatter.Deserialize(stream);
+                Data = (T) binaryFormatter.Deserialize(stream);
             }
-            catch (SerializationException e)
+            catch (System.Exception e)
             {
-                Log.Error(e);
-                LoadDefault();
-            }
-            catch (InvalidCastException e)
-            {
-                Log.Error(e);
+                Log.Error($"Broken cache file: {FilePath}");
+                Log.Exception(e);
+                stream.Close();
                 LoadDefault();
             }
             finally
@@ -114,7 +112,7 @@ namespace Wox.Infrastructure.Storage
                 }
                 catch (SerializationException e)
                 {
-                    Log.Error(e);
+                    Log.Exception(e);
                 }
             }
         }
